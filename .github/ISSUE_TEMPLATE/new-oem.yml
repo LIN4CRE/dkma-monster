@@ -1,0 +1,19 @@
+name: "Add / fix an OEM"
+description: "Report a new phone brand or a wrong settings path"
+title: "[OEM] "
+labels: ["oem-data"]
+body:
+  - type: input
+    id: brand
+    attributes: { label: "Brand / ROM", placeholder: "e.g. Xiaomi HyperOS 2.0" }
+    validations: { required: true }
+  - type: input
+    id: model
+    attributes: { label: "Device model", placeholder: "e.g. Redmi Note 13" }
+  - type: textarea
+    id: path
+    attributes: { label: "Settings path that works", placeholder: "Settings > Apps > ..." }
+    validations: { required: true }
+  - type: textarea
+    id: component
+    attributes: { label: "(Dev) Activity component if known", placeholder: "pkg/activity" }
