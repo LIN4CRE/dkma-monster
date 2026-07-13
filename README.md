@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/LIN4CRE/dkma-monster/main/.github/banner.png" alt="dkma-monster banner" width="100%"></p>
+
 <div align="center">
 
 # 🧟 DKMA Monster
