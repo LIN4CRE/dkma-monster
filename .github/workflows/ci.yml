@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  single-source:
+    name: Registry single-source & drift check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate registry + check generated Kotlin is in sync
+        run: python3 tools/build_all.py --check
+
+      - name: Compile Python entrypoints
+        run: |
+          python3 -m py_compile adb/dkma.py
+          python3 -m py_compile gui/server.py
+          python3 -m py_compile web/build.py
+          python3 -m py_compile tools/gen_kotlin_registry.py
+          python3 -m py_compile tools/gen_kmp_registry.py
+          python3 -m py_compile tools/build_all.py
+
+      - name: Regenerate and ensure working tree is clean
+        run: |
+          python3 tools/build_all.py
+          git diff --exit-code \
+            -- android/DkmaRegistry.kt \
+               kmp/src/commonMain/kotlin/dkma/monster/DkmaRegistryData.kt \
+            || (echo "::error::Generated registries not up to date. Run tools/build_all.py" && exit 1)

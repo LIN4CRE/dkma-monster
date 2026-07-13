@@ -1,0 +1,513 @@
+{
+  "_meta": {
+    "name": "DKMA OEM Registry",
+    "version": "1.0.0",
+    "description": "Knowledge base of vendor-specific background/autostart/battery settings screens. Used by the ADB installer, root installer, and in-app library. Component names are 'package/activity'. Some vary by ROM version, so each entry lists ordered fallbacks.",
+    "reference": "https://dontkillmyapp.com",
+    "notes": "Autostart, 'optimizations', protected apps, per-app battery profiles and pinning are UI-only on stock devices (no public API). Root variant flips them via appops/settings/db where known."
+  },
+  "generic": {
+    "battery_optimization_list": {
+      "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+    },
+    "battery_optimization_request": {
+      "action": "android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+      "data": "package:%PKG%"
+    },
+    "app_details": {
+      "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+      "data": "package:%PKG%"
+    },
+    "battery_saver": {
+      "action": "android.settings.BATTERY_SAVER_SETTINGS"
+    },
+    "dev_options": {
+      "action": "android.settings.APPLICATION_DEVELOPMENT_SETTINGS"
+    }
+  },
+  "oems": [
+    {
+      "id": "xiaomi",
+      "label": "Xiaomi / Redmi / POCO (MIUI / HyperOS)",
+      "match": {
+        "manufacturer": [
+          "xiaomi"
+        ],
+        "brand": [
+          "xiaomi",
+          "redmi",
+          "poco"
+        ],
+        "props": [
+          "ro.miui.ui.version.name",
+          "ro.mi.os.version.name"
+        ]
+      },
+      "steps": [
+        {
+          "id": "autostart",
+          "title": "Autostart (enable for your app)",
+          "components": [
+            "com.miui.securitycenter/com.miui.permcenter.autostart.AutoStartManagementActivity",
+            "com.miui.securitycenter/com.miui.permcenter.autostart.AutoStartManagementActivityNew"
+          ],
+          "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."
+        },
+        {
+          "id": "battery_profile",
+          "title": "Battery saver -> No restrictions",
+          "components": [
+            "com.miui.powerkeeper/com.miui.powerkeeper.ui.HiddenAppsConfigActivity"
+          ],
+          "extras": {
+            "package_name": "%PKG%"
+          },
+          "hint": "Set this app’s battery mode to “No restrictions” (not “Battery saver”)."
+        },
+        {
+          "id": "app_details",
+          "title": "App info (Keep running after screen off)",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": [
+        {
+          "cmd": "appops",
+          "op": "AUTO_START",
+          "mode": "allow"
+        },
+        {
+          "cmd": "appops",
+          "op": "BOOT_COMPLETED",
+          "mode": "allow"
+        }
+      ]
+    },
+    {
+      "id": "samsung",
+      "label": "Samsung (One UI)",
+      "match": {
+        "manufacturer": [
+          "samsung"
+        ],
+        "brand": [
+          "samsung"
+        ]
+      },
+      "steps": [
+        {
+          "id": "sleeping_apps",
+          "title": "Device care -> Battery -> Background usage limits",
+          "components": [
+            "com.samsung.android.lool/com.samsung.android.sm.battery.ui.BatteryActivity",
+            "com.samsung.android.sm/com.samsung.android.sm.ui.battery.BatteryActivity"
+          ],
+          "hint": "Make sure this app is NOT in “Sleeping apps” or “Deep sleeping apps.” Remove it if listed."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery -> Unrestricted",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "huawei",
+      "label": "Huawei / Honor (EMUI / MagicOS)",
+      "match": {
+        "manufacturer": [
+          "huawei",
+          "honor"
+        ],
+        "brand": [
+          "huawei",
+          "honor"
+        ]
+      },
+      "steps": [
+        {
+          "id": "protected_apps",
+          "title": "App launch / Protected apps (set to Manage manually, all ON)",
+          "components": [
+            "com.huawei.systemmanager/.startupmgr.ui.StartupNormalAppListActivity",
+            "com.huawei.systemmanager/.optimize.process.ProtectActivity",
+            "com.huawei.systemmanager/.optimize.bootstart.BootStartActivity"
+          ],
+          "hint": "Switch this app to “Manage manually,” then enable Auto-launch, Secondary launch and Run in background."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "oppo",
+      "label": "OPPO (ColorOS)",
+      "match": {
+        "manufacturer": [
+          "oppo"
+        ],
+        "brand": [
+          "oppo"
+        ]
+      },
+      "steps": [
+        {
+          "id": "startup_manager",
+          "title": "Startup manager (allow auto-launch)",
+          "components": [
+            "com.coloros.safecenter/.startupapp.StartupAppListActivity",
+            "com.coloros.safecenter/com.coloros.privacypermissionsentry.PermissionTopActivity",
+            "com.oppo.safe/.permission.startup.StartupAppListActivity"
+          ],
+          "hint": "Allow this app to auto-launch in the Startup manager."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "vivo",
+      "label": "vivo (Funtouch / OriginOS)",
+      "match": {
+        "manufacturer": [
+          "vivo"
+        ],
+        "brand": [
+          "vivo",
+          "iqoo"
+        ]
+      },
+      "steps": [
+        {
+          "id": "autostart",
+          "title": "Autostart / Background power (allow)",
+          "components": [
+            "com.iqoo.secure/.ui.phoneoptimize.AddWhiteListActivity",
+            "com.iqoo.secure/.safeguard.PurviewTabActivity",
+            "com.vivo.permissionmanager/.activity.BgStartUpManagerActivity",
+            "com.vivo.abe/com.vivo.applicationbehaviorengine.ui.ExcessivePowerManagerActivity"
+          ],
+          "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "oneplus",
+      "label": "OnePlus (OxygenOS / ColorOS)",
+      "match": {
+        "manufacturer": [
+          "oneplus"
+        ],
+        "brand": [
+          "oneplus"
+        ]
+      },
+      "steps": [
+        {
+          "id": "recent_lock",
+          "title": "Recent apps -> lock the app; then Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "Lock the app card in Recent apps, then set Battery optimization to “Don’t optimize.”"
+        },
+        {
+          "id": "chain_launch",
+          "title": "Advanced optimization / Deep optimization (disable)",
+          "components": [
+            "com.oneplus.security/.chainlaunch.view.ChainLaunchAppListActivity"
+          ],
+          "hint": "Turn off “Deep / Advanced optimization” for this app."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "realme",
+      "label": "realme (realme UI / ColorOS)",
+      "match": {
+        "manufacturer": [
+          "realme"
+        ],
+        "brand": [
+          "realme"
+        ]
+      },
+      "steps": [
+        {
+          "id": "startup_manager",
+          "title": "Startup manager (allow auto-launch)",
+          "components": [
+            "com.coloros.safecenter/.startupapp.StartupAppListActivity",
+            "com.coloros.safecenter/com.coloros.privacypermissionsentry.PermissionTopActivity"
+          ],
+          "hint": "Allow this app to auto-launch in the Startup manager."
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "meizu",
+      "label": "Meizu (Flyme)",
+      "match": {
+        "manufacturer": [
+          "meizu"
+        ],
+        "brand": [
+          "meizu"
+        ]
+      },
+      "steps": [
+        {
+          "id": "security",
+          "title": "Security -> Permissions / Background management",
+          "components": [
+            "com.meizu.safe/.permission.SmartBGActivity",
+            "com.meizu.safe/.permission.PermissionMainActivity"
+          ],
+          "hint": "In the Security app, allow this app to keep running in the background."
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "asus",
+      "label": "ASUS (ZenUI)",
+      "match": {
+        "manufacturer": [
+          "asus"
+        ],
+        "brand": [
+          "asus"
+        ]
+      },
+      "steps": [
+        {
+          "id": "auto_start",
+          "title": "Auto-start manager / Mobile Manager",
+          "components": [
+            "com.asus.mobilemanager/.MainActivity",
+            "com.asus.mobilemanager/.autostart.AutoStartActivity"
+          ],
+          "hint": "Allow this app to auto-start via the device’s Mobile/Phone Manager."
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "sony",
+      "label": "Sony (Xperia)",
+      "match": {
+        "manufacturer": [
+          "sony"
+        ],
+        "brand": [
+          "sony"
+        ]
+      },
+      "steps": [
+        {
+          "id": "stamina",
+          "title": "STAMINA mode -> exclude app; Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "Add this app to the exceptions of STAMINA / battery-saver mode."
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "nokia",
+      "label": "Nokia / HMD",
+      "match": {
+        "manufacturer": [
+          "hmd global",
+          "nokia"
+        ],
+        "brand": [
+          "nokia"
+        ]
+      },
+      "steps": [
+        {
+          "id": "battery_opt",
+          "title": "Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "In the battery-optimization list, set this app to “Don’t optimize.”"
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "google",
+      "label": "Google Pixel / Android One (stock)",
+      "match": {
+        "manufacturer": [
+          "google"
+        ],
+        "brand": [
+          "google"
+        ]
+      },
+      "steps": [
+        {
+          "id": "battery_opt",
+          "title": "Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "In the battery-optimization list, set this app to “Don’t optimize.”"
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery -> Unrestricted",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "motorola",
+      "label": "Motorola / Lenovo (near-stock)",
+      "match": {
+        "manufacturer": [
+          "motorola",
+          "lenovo"
+        ],
+        "brand": [
+          "motorola",
+          "lenovo"
+        ]
+      },
+      "steps": [
+        {
+          "id": "battery_opt",
+          "title": "Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "In the battery-optimization list, set this app to “Don’t optimize.”"
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "nothing",
+      "label": "Nothing (Nothing OS)",
+      "match": {
+        "manufacturer": [
+          "nothing"
+        ],
+        "brand": [
+          "nothing"
+        ]
+      },
+      "steps": [
+        {
+          "id": "battery_opt",
+          "title": "Battery optimization -> Don't optimize",
+          "use": "generic.battery_optimization_list",
+          "hint": "In the battery-optimization list, set this app to “Don’t optimize.”"
+        },
+        {
+          "id": "app_details",
+          "title": "App info -> Battery -> Unrestricted",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    },
+    {
+      "id": "tecno_infinix_itel",
+      "label": "Transsion: Tecno / Infinix / itel (HiOS / XOS)",
+      "match": {
+        "manufacturer": [
+          "tecno",
+          "infinix",
+          "itel",
+          "transsion"
+        ],
+        "brand": [
+          "tecno",
+          "infinix",
+          "itel"
+        ]
+      },
+      "steps": [
+        {
+          "id": "autostart",
+          "title": "Phone Master -> Auto-start / App freezer",
+          "components": [
+            "com.transsion.phonemaster/.appaccelerate.AppFreezerActivity",
+            "com.cxzh.antivirus/.ui.MainActivity"
+          ],
+          "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."
+        },
+        {
+          "id": "app_details",
+          "title": "App info",
+          "use": "generic.app_details",
+          "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"
+        }
+      ],
+      "root_ops": []
+    }
+  ]
+}

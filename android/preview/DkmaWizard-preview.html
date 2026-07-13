@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DKMA Wizard — Compose UI kit preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* page chrome = ink black + amber */
+    --page:#0b0b0d; --pagepanel:#15151c; --pageline:#26262f; --pagetext:#f4f2ee; --pagemuted:#9a9aa6;
+    --amber:#f5a524; --amber2:#ff8f00; --glow:0 0 22px rgba(245,165,36,.30);
+    --mono:ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+    --sans:'Space Grotesk','Segoe UI',Roboto,system-ui,-apple-system,sans-serif;
+    /* phone = dark Material with amber primary */
+    --bg:#121216; --surface:#1a1a22; --onbg:#ece9e4; --variant:#a2a2ad;
+    --primary:#f5a524; --onprimary:#0b0b0d; --primcont:#3a2c10;
+    --err:#ff5c6c; --errcont:#3a1518; --seccont:#14301c; --line:#2c2c36;
+    --ok:#3ddc84;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);
+       background:var(--page);color:var(--pagetext);
+       background-image:radial-gradient(1000px 460px at 88% -10%,rgba(245,165,36,.10),transparent 60%);
+       background-attachment:fixed;}
+  .wrap{display:flex;gap:28px;align-items:flex-start;justify-content:center;
+        flex-wrap:wrap;padding:28px 16px 60px;}
+  .side{max-width:340px;flex:1 1 280px;min-width:260px;}
+  .side h1{font-size:24px;margin:0 0 8px;letter-spacing:-.01em;}
+  .side h1 .amber{background:linear-gradient(135deg,#f5a524,#ff8f00);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .side p{color:var(--pagemuted);line-height:1.55;font-size:14px;}
+  .pill{display:inline-block;background:rgba(245,165,36,.14);color:var(--amber);border:1px solid rgba(245,165,36,.35);
+        border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;margin:2px 4px 2px 0;font-family:var(--mono);}
+  .switcher{margin-top:18px;}
+  .switcher label{display:block;font-size:12px;font-weight:600;color:var(--amber);
+        text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-family:var(--mono);}
+  select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+         font-size:15px;background:#fff;color:var(--onbg);}
+  .note{margin-top:16px;font-size:12px;color:var(--pagemuted);line-height:1.55;
+        border-left:3px solid var(--primary);padding:8px 12px;background:#fff;border-radius:0 8px 8px 0;}
+  .phone{width:360px;flex:0 0 auto;background:#000;border:1px solid #26262f;border-radius:38px;padding:12px;
+         box-shadow:0 18px 60px rgba(0,0,0,.6),0 0 40px rgba(245,165,36,.10);}
+  .screen{background:var(--bg);border-radius:28px;height:720px;overflow-y:auto;position:relative;}
+  .statusbar{height:26px;display:flex;align-items:center;justify-content:space-between;
+             padding:0 18px;font-size:11px;color:var(--variant);}
+  .content{padding:18px;}
+  h2{font-size:20px;margin:2px 0 6px;}
+  .sub{color:var(--variant);font-size:13px;line-height:1.5;margin:0 0 14px;}
+  .progress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 4px;}
+  .bar{height:100%;background:var(--primary);width:0;transition:width .35s ease;}
+  .plabel{font-size:12px;color:var(--variant);margin-bottom:14px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;
+        padding:14px;margin-bottom:12px;}
+  .batt{border:none;}
+  .batt.bad{background:var(--errcont);}
+  .batt.good{background:var(--seccont);}
+  .row{display:flex;align-items:center;gap:10px;}
+  .dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto;}
+  .dot.bad{background:var(--err);} .dot.good{background:var(--ok);}
+  .grow{flex:1;}
+  .title{font-weight:600;font-size:15px;}
+  .small{font-size:12.5px;color:var(--variant);line-height:1.45;}
+  .badge{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--variant);
+         display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:0 0 auto;}
+  .badge.done{background:var(--primary);color:#fff;}
+  .steptitle{font-weight:600;font-size:15px;}
+  .hint{font-size:13px;color:var(--variant);line-height:1.5;margin:10px 0;}
+  .btns{display:flex;gap:8px;margin-top:6px;}
+  button{font:inherit;border:none;border-radius:20px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:13px;}
+  .tonal{background:var(--primcont);color:#0e1a6b;flex:1;}
+  .filled{background:var(--primary);color:#fff;}
+  .outlined{background:#fff;border:1px solid var(--line);color:var(--onbg);}
+  .fix{background:var(--primary);color:#fff;}
+  .finish{width:100%;background:var(--primary);color:#fff;padding:14px;border-radius:14px;
+          font-size:15px;margin-top:6px;}
+  .disc{font-size:11px;color:var(--variant);text-align:center;line-height:1.5;margin-top:14px;}
+  .caption{font-size:11px;color:var(--pagemuted);text-align:center;margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="side">
+    <h1>DKMA <span class="amber">Wizard</span></h1>
+    <p>A drop-in <b>Jetpack Compose</b> UI kit that renders an OEM-aware
+       &ldquo;keep me alive&rdquo; checklist on top of <code>DkmaMonster.kt</code>.</p>
+    <div>
+      <span class="pill">Material 3</span>
+      <span class="pill">Zero-nag when exempt</span>
+      <span class="pill">Auto-verifies battery</span>
+      <span class="pill">16 device profiles</span>
+    </div>
+    <div class="switcher">
+      <label for="dev">Preview device</label>
+      <select id="dev"></select>
+    </div>
+    <div class="switcher">
+      <label>Authoritative autostart (MIUI only)</label>
+      <button onclick="simAutostart()" style="width:100%;padding:10px 12px;
+        border:1px solid var(--line);border-radius:10px;background:#fff;
+        font-size:14px;cursor:pointer;font-weight:600">
+        Simulate: read Autostart via AppOps
+      </button>
+    </div>
+    <div class="note">This HTML is a faithful preview of the Compose screen,
+       driven by the <b>same step data</b> from <code>oem_registry.json</code>.
+       On Xiaomi, <code>DkmaAutostart</code> reads the real state — tap the button
+       above to see the <b>Verified</b> chip and auto-tick. Tap
+       &ldquo;Open settings&rdquo; / &ldquo;Done&rdquo; for the other steps.</div>
+    <p class="caption" style="text-align:left;margin-top:14px;">
+       Ship <code>DkmaWizard.kt</code> in your app:<br>
+       <code>DkmaWizardScreen(onFinish = { finish() })</code></p>
+    <p class="caption" style="text-align:left;margin-top:14px;color:var(--pagemuted)">Built by <strong style="color:var(--pagetext)">David Linacre</strong> · <a href="https://www.linacre.site/" style="color:var(--amber)">linacre.site</a></p>
+  </div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>&#9650; &#9660; 100% &#9646;</span></div>
+      <div class="content" id="app"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {"order": ["xiaomi", "samsung", "huawei", "oppo", "vivo", "oneplus", "realme", "meizu", "asus", "sony", "nokia", "google", "motorola", "nothing", "tecno_infinix_itel", "generic"], "oems": {"xiaomi": {"label": "Xiaomi / Redmi / POCO (MIUI / HyperOS)", "steps": [{"title": "Autostart (enable for your app)", "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."}, {"title": "Battery saver → No restrictions", "hint": "Set this app’s battery mode to “No restrictions” (not “Battery saver”)."}, {"title": "App info (Keep running after screen off)", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "samsung": {"label": "Samsung (One UI)", "steps": [{"title": "Device care → Battery → Background usage limits", "hint": "Make sure this app is NOT in “Sleeping apps” or “Deep sleeping apps.” Remove it if listed."}, {"title": "App info → Battery → Unrestricted", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "huawei": {"label": "Huawei / Honor (EMUI / MagicOS)", "steps": [{"title": "App launch / Protected apps (set to Manage manually, all ON)", "hint": "Switch this app to “Manage manually,” then enable Auto-launch, Secondary launch and Run in background."}, {"title": "App info → Battery", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "oppo": {"label": "OPPO (ColorOS)", "steps": [{"title": "Startup manager (allow auto-launch)", "hint": "Allow this app to auto-launch in the Startup manager."}, {"title": "App info → Battery", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "vivo": {"label": "vivo (Funtouch / OriginOS)", "steps": [{"title": "Autostart / Background power (allow)", "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."}, {"title": "App info → Battery", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "oneplus": {"label": "OnePlus (OxygenOS / ColorOS)", "steps": [{"title": "Recent apps → lock the app; then Battery optimization → Don't optimize", "hint": "Open this settings screen and allow the app to run in the background."}, {"title": "Advanced optimization / Deep optimization (disable)", "hint": "Open this settings screen and allow the app to run in the background."}, {"title": "App info → Battery", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "realme": {"label": "realme (realme UI / ColorOS)", "steps": [{"title": "Startup manager (allow auto-launch)", "hint": "Allow this app to auto-launch in the Startup manager."}, {"title": "App info → Battery", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "meizu": {"label": "Meizu (Flyme)", "steps": [{"title": "Security → Permissions / Background management", "hint": "Allow this app to run in the background from Security settings."}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "asus": {"label": "ASUS (ZenUI)", "steps": [{"title": "Auto-start manager / Mobile Manager", "hint": "Open this settings screen and allow the app to run in the background."}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "sony": {"label": "Sony (Xperia)", "steps": [{"title": "STAMINA mode → exclude app; Battery optimization → Don't optimize", "hint": "Exclude this app from STAMINA / battery-saver mode."}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "nokia": {"label": "Nokia / HMD", "steps": [{"title": "Battery optimization → Don't optimize", "hint": "In the list that opens, find this app and set it to “Don’t optimize.”"}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "google": {"label": "Google Pixel / Android One (stock)", "steps": [{"title": "Battery optimization → Don't optimize", "hint": "In the list that opens, find this app and set it to “Don’t optimize.”"}, {"title": "App info → Battery → Unrestricted", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "motorola": {"label": "Motorola / Lenovo (near-stock)", "steps": [{"title": "Battery optimization → Don't optimize", "hint": "In the list that opens, find this app and set it to “Don’t optimize.”"}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "nothing": {"label": "Nothing (Nothing OS)", "steps": [{"title": "Battery optimization → Don't optimize", "hint": "In the list that opens, find this app and set it to “Don’t optimize.”"}, {"title": "App info → Battery → Unrestricted", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "tecno_infinix_itel": {"label": "Transsion: Tecno / Infinix / itel (HiOS / XOS)", "steps": [{"title": "Phone Master → Auto-start / App freezer", "hint": "Find this app in the Autostart list and turn its toggle ON. This is the single most important step."}, {"title": "App info", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}, "generic": {"label": "Generic / Stock Android", "steps": [{"title": "Battery optimization → Don’t optimize", "hint": "In the list that opens, find this app and set it to “Don’t optimize.”"}, {"title": "App info → Battery → Unrestricted", "hint": "Open Battery and choose “Unrestricted” / “Keep running after screen off.”"}]}}};
+let current = DATA.order[0];
+let statuses = {};
+let battery = false;
+let autostartVerified = false;
+
+function reset(){ statuses={}; battery=false; autostartVerified=false; }
+
+function render(){
+  const oem = DATA.oems[current];
+  const steps = oem.steps;
+  const done = Object.values(statuses).filter(s=>s==='done').length;
+  const pct = steps.length? Math.round(done/steps.length*100):100;
+
+  let html = '';
+  html += '<h2>Keep this app running</h2>';
+  html += '<p class="sub">Your <b>'+oem.label+'</b> device limits background apps '
+        + 'aggressively. Complete these quick steps so notifications, syncs and '
+        + 'alarms keep working.</p>';
+  html += '<div class="progress"><div class="bar" style="width:'+pct+'%"></div></div>';
+  html += '<div class="plabel">'+done+' of '+steps.length+' steps done</div>';
+
+  html += '<div class="card batt '+(battery?'good':'bad')+'">'
+        + '<div class="row"><div class="dot '+(battery?'good':'bad')+'"></div>'
+        + '<div class="grow"><div class="title">'
+        + (battery?'Battery optimization: exempt &#10003;':'Battery optimization: needs attention')
+        + '</div><div class="small">'
+        + (battery?'This app is already excluded from Doze. Nice.'
+                 :'Tap Fix and choose &ldquo;Allow&rdquo; / &ldquo;Don&rsquo;t optimize.&rdquo;')
+        + '</div></div>'
+        + (battery?'':'<button class="fix" onclick="fixBattery()">Fix</button>')
+        + '</div></div>';
+
+  steps.forEach(function(st,i){
+    const status = statuses[i]||'pending';
+    const isAutostart = /autostart/i.test(st.title);
+    const isDone = status==='done' || (isAutostart && autostartVerified);
+    const chip = (isAutostart && autostartVerified)
+      ? '<span style="background:#dbe6cf;color:#1b5e20;border-radius:999px;'
+        + 'padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">'
+        + '&#10003; Verified &middot; read via AppOps</span>'
+      : '';
+    html += '<div class="card">'
+      + '<div class="row"><div class="badge '+(isDone?'done':'')+'">'
+      + (isDone?'&#10003;':(i+1))+'</div>'
+      + '<div class="steptitle grow">'+st.title+'</div>'+chip+'</div>'
+      + '<div class="hint">'+st.hint+'</div>'
+      + '<div class="btns">'
+      + '<button class="tonal" onclick="openStep('+i+')">'
+      +   (status==='pending'?'Open settings &rsaquo;':'Open again &rsaquo;')+'</button>'
+      + (isDone
+          ? '<button class="outlined" onclick="toggleDone('+i+')">Undo</button>'
+          : '<button class="filled" onclick="toggleDone('+i+')">&#10003; Done</button>')
+      + '</div></div>';
+  });
+
+  html += '<button class="finish">'+(done===steps.length?'All set &mdash; Finish':'Finish for now')+'</button>';
+  html += '<div class="disc">Autostart, MIUI/OEM optimizations and protected-app '
+        + 'lists have no public API, so these toggles are set by you &mdash; we just take '
+        + 'you straight to each screen. Reference: dontkillmyapp.com</div>';
+
+  document.getElementById('app').innerHTML = html;
+}
+
+function openStep(i){ if((statuses[i]||'pending')==='pending') statuses[i]='opened'; render(); }
+function toggleDone(i){ statuses[i] = (statuses[i]==='done')?'opened':'done'; render(); }
+function fixBattery(){ battery=true; render(); }
+function simAutostart(){ autostartVerified=!autostartVerified; render(); }
+
+const sel = document.getElementById('dev');
+DATA.order.forEach(function(id){
+  const o=document.createElement('option'); o.value=id; o.textContent=DATA.oems[id].label;
+  sel.appendChild(o);
+});
+sel.value=current;
+sel.addEventListener('change', function(e){ current=e.target.value; reset(); render(); });
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!--
+  Merge into your app's AndroidManifest.xml <manifest> element.
+  These are the standard Android permissions DkmaMonster and reliable background
+  work rely on. MIUI/EMUI/etc. Autostart toggles have NO permission to declare —
+  they are UI-only, which is exactly why DkmaMonster deep-links to them.
+-->
+
+<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+<!-- Foreground service = most reliable pattern on aggressive OEMs.
+     Android 14+ requires a typed permission; pick what matches your use. -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+<!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" /> -->
+<!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" /> -->
